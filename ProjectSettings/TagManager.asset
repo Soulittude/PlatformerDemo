@@ -8,6 +8,8 @@ TagManager:
   - CheckPoint
   - NextLevel
   - PreviousLevel
+  - Damage
+  - Crystal
   layers:
   - Default
   - TransparentFX

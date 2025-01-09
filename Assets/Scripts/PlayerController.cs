@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,12 +22,21 @@ public class PlayerController : MonoBehaviour
     public Vector3 respawnPoint;
     public GameObject fallDetector;
 
+    public TMP_Text scoreText;
+    [SerializeField] private HealthBar healthBar;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (healthBar == null)
+        {
+            healthBar = FindObjectOfType<HealthBar>();
+        }
+
         player = GetComponent<Rigidbody2D>();
         playerAnimation = GetComponent<Animator>();
         respawnPoint = transform.position;
+        scoreText.text = "Score: " + Scoring.totalScore;
     }
 
     // Update is called once per frame
@@ -61,6 +72,12 @@ public class PlayerController : MonoBehaviour
             transform.position = respawnPoint;
         }
 
+        else if(collision.tag == "Crystal"){
+            Scoring.totalScore += 1;
+            scoreText.text = "Score: " + Scoring.totalScore;
+            collision.gameObject.SetActive(false);
+        }
+
         else if(collision.tag == "CheckPoint"){
             respawnPoint = transform.position;
         }
@@ -72,6 +89,13 @@ public class PlayerController : MonoBehaviour
         else if(collision.tag == "PreviousLevel"){
             SceneManager.LoadScene(0);
             respawnPoint = transform.position;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision){
+        if (collision.tag == "Damage" && healthBar != null)
+        {
+            healthBar.Damage(0.01f);
         }
     }
 }
